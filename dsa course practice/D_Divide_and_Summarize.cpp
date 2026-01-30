@@ -1,7 +1,4 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-
 using namespace std;
 
 using dbl = long double;
@@ -23,13 +20,10 @@ using vpll = vector<pll>;
 #define tin0(a, n) fo(i, 0, n) cin >> a[i]
 #define tin1(a, n) fu(i, 1, n) cin >> a[i]
 #define all(v) v.begin(), v.end()
-#define yes cout << "YES" << endl
-#define no cout << "NO" << endl
+#define yes cout << "Yes" << endl
+#define no cout << "No" << endl
 #define f first
 #define s second
- 
-typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update> ordered_set;
-
 
 ll pow(ll a, ll b) {
   ll res = 1;
@@ -53,7 +47,45 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void findSums(vll& a, ll l, ll r, set<ll>& posSums, vll& prefSums,
+              set<pair<ll, ll>>& visited) {
+  // [l, r)
+  if (l >= r) return;
+  if (visited.find({l, r}) != visited.end()) return;
+  posSums.insert(prefSums[r] - prefSums[l]);
+  visited.insert({l, r});
+  ll pivot = (a[l] + a[r - 1]) / 2;
+  ll idx = upper_bound(all(a), pivot) - a.begin();
+
+  findSums(a, l, idx, posSums, prefSums, visited);
+  findSums(a, idx, r, posSums, prefSums, visited);
+}
+
+void solve() {
+  ll n, q;
+  cin >> n >> q;
+  vll a(n);
+  tin0(a, n);
+  sort(all(a));
+
+  vll prefSums(n + 1, 0);
+  fu(i, 0, n - 1) {
+    prefSums[i + 1] = prefSums[i] + a[i];  // prefSums[i] = a[i-1] + .. a[0]
+  }
+  set<ll> posSums;
+  set<pair<ll, ll>> visited;
+  findSums(a, 0, n, posSums, prefSums, visited);
+
+  while (q--) {
+    ll s;
+    cin >> s;
+
+    if (posSums.find(s) != posSums.end())
+      yes;
+    else
+      no;
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);

@@ -1,7 +1,4 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-
 using namespace std;
 
 using dbl = long double;
@@ -27,9 +24,6 @@ using vpll = vector<pll>;
 #define no cout << "NO" << endl
 #define f first
 #define s second
- 
-typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update> ordered_set;
-
 
 ll pow(ll a, ll b) {
   ll res = 1;
@@ -53,7 +47,40 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+ll getMaxSubArrSum(vll& a) {
+  ll varSum = 0, ans = 0;
+  for (ll k : a) {
+    varSum = max(k, varSum + k);
+    ans = max(varSum, ans);
+  }
+  return ans;
+}
+
+void solve() {
+  ll n;
+  cin >> n;
+  vll a(n);
+  tin0(a, n);
+
+  ll summ = 0;
+  for (ll i = 0; i < n; i += 2) {
+    summ += a[i];
+  }
+  vll v1, v2;
+
+  for (ll i = 0; i < n - 1; i += 2) {
+    v1.pb(a[i + 1] - a[i]);
+  }
+
+  for (ll i = 1; i < n - 1; i += 2) {
+    v2.pb(a[i] - a[i + 1]);
+  }
+  ll max_gain = 0;
+  if (!v1.empty()) max_gain = max(max_gain, getMaxSubArrSum(v1));
+  if (!v2.empty()) max_gain = max(max_gain, getMaxSubArrSum(v2));
+
+  cout << summ + max_gain << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);
