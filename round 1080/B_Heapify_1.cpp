@@ -60,16 +60,22 @@ void solve() {
   ll n;
   cin >> n;
 
-  vll a(n);
-  tin0(a, n);
+  vll a(n + 1);
+  tin1(a, n);
 
-  fu(i, 0, n - 1) {
-    if (a[i] == 67) {
-      yes;
+  fu(i, 1, n) {
+    ll k = a[i];
+    ll j = i;
+    while (k % 2 == 0) k /= 2;
+    while (j % 2 == 0) j /= 2;
+
+    if (k != j) {
+      no;
       return;
     }
   }
-  no;
+
+  yes;
 }
 
 int main() {

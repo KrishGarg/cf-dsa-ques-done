@@ -60,16 +60,23 @@ void solve() {
   ll n;
   cin >> n;
 
-  vll a(n);
-  tin0(a, n);
+  vll f(n + 1);
+  tin1(f, n);
 
-  fu(i, 0, n - 1) {
-    if (a[i] == 67) {
-      yes;
-      return;
-    }
-  }
-  no;
+  vll ans(n + 1);
+
+  fu(i, 2, n - 1) { ans[i] = (f[i + 1] - 2 * f[i] + f[i - 1]) / 2; }
+
+  ll weighted_sum = 0;
+  fu(i, 2, n - 1) { weighted_sum += ans[i] * (i - 1); }
+  ans[n] = (f[1] - weighted_sum) / (n - 1);
+
+  ll sum_rest = 0;
+  fu(i, 2, n) { sum_rest += ans[i]; }
+  ans[1] = (f[2] - f[1]) + sum_rest;
+
+  fu(i, 1, n) { cout << ans[i] << " "; }
+  cout << endl;
 }
 
 int main() {

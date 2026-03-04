@@ -63,13 +63,14 @@ void solve() {
   vll a(n);
   tin0(a, n);
 
-  fu(i, 0, n - 1) {
-    if (a[i] == 67) {
-      yes;
-      return;
-    }
+  ll ops = 0;
+  fu(i, 0, n - 2) {
+    ll cur = a[i], fw = a[i + 1];
+    if (cur != fw && cur + fw != 7) continue;
+    ops++;
+    i++;
   }
-  no;
+  cout << ops << endl;
 }
 
 int main() {

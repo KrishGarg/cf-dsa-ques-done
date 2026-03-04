@@ -63,13 +63,15 @@ void solve() {
   vll a(n);
   tin0(a, n);
 
+  stack<pair<ll, ll>> s;
   fu(i, 0, n - 1) {
-    if (a[i] == 67) {
-      yes;
-      return;
-    }
+    while (!s.empty() && s.top().f >= a[i]) s.pop();
+    ll ans = s.empty() ? 0 : s.top().s;
+    s.push({a[i], i + 1});
+
+    cout << ans << " ";
   }
-  no;
+  cout << endl;
 }
 
 int main() {
@@ -77,11 +79,12 @@ int main() {
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  //   solve();
+  // }
+  solve();
 
   return 0;
 }

@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 
@@ -28,11 +27,9 @@ using vpll = vector<pll>;
 #define no cout << "NO" << endl
 #define f first
 #define s second
+ 
+typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update> ordered_set;
 
-typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
-                         __gnu_pbds::rb_tree_tag,
-                         __gnu_pbds::tree_order_statistics_node_update>
-    ordered_set;
 
 ll pow(ll a, ll b) {
   ll res = 1;
@@ -56,21 +53,7 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {
-  ll n;
-  cin >> n;
-
-  vll a(n);
-  tin0(a, n);
-
-  fu(i, 0, n - 1) {
-    if (a[i] == 67) {
-      yes;
-      return;
-    }
-  }
-  no;
-}
+void solve() {}
 
 int main() {
   ios::sync_with_stdio(false);
