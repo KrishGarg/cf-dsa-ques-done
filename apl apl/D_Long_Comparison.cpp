@@ -57,69 +57,68 @@ ll modpow(ll a, ll b, ll m) {
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
 void solve() {
-  ll n, m, s;
-  cin >> n >> m >> s;
+  ll x1, x2;
+  ll p1, p2;
 
-  vll a(m), b(n), c(n);
-  tin0(a, m);
-  tin0(b, n);
-  tin0(c, n);
+  cin >> x1 >> p1 >> x2 >> p2;
 
-  vector<pair<ll, pll>> skillPass(n);
-  fu(i, 0, n - 1) { skillPass[i] = {b[i], {c[i], i + 1}}; }
-  sort(all(skillPass), greater<>());
+  ll digsX1 = 0, x1Copy = x1, digsX2 = 0, x2Copy = x2;
 
-  vpll aIdx(m);
-  fu(i, 0, m - 1) { aIdx[i] = {a[i], i}; }
-  sort(all(aIdx), greater<>());
-
-  ll ans = -1;
-  ll l = 1, r = m;
-  vll best_ans(m);
-
-  while (l <= r) {
-    ll t = l + (r - l) / 2;
-    priority_queue<pll, vpll, greater<>> pq;
-    ll cost = 0;
-    bool canDo = true;
-    vll current_ans(m);
-
-    for (ll i = 0, j = 0; i < m; i += t) {
-      while (j < n && skillPass[j].f >= aIdx[i].f) {
-        pq.push({skillPass[j].s.f, skillPass[j].s.s});
-        j++;
-      }
-
-      if (pq.empty()) {
-        canDo = false;
-        break;
-      }
-      pll cheapest = pq.top();
-      pq.pop();
-      cost += cheapest.f;
-
-      if (cost > s) {
-        canDo = false;
-        break;
-      }
-
-      fu(k, i, min(m, i + t) - 1) { current_ans[aIdx[k].s] = cheapest.s; }
-    }
-
-    if (canDo) {
-      ans = t;
-      best_ans = current_ans;
-      r = t - 1;
-    } else {
-      l = t + 1;
-    }
+  while (x1Copy > 0) {
+    digsX1++;
+    x1Copy /= 10;
   }
-  if (ans == -1) {
-    no;
+
+  while (x2Copy > 0) {
+    digsX2++;
+    x2Copy /= 10;
+  }
+
+  if (digsX1 + p1 > digsX2 + p2) {
+    cout << ">" << endl;
+    return;
+  }
+  if (digsX1 + p1 < digsX2 + p2) {
+    cout << "<" << endl;
+    return;
+  }
+  if (p1 == p2) {
+    if (x1 < x2) {
+      cout << "<" << endl;
+    } else if (x1 > x2) {
+      cout << ">" << endl;
+    } else {
+      cout << "=" << endl;
+    }
+    return;
   } else {
-    yes;
-    fu(i, 0, m - 1) { cout << best_ans[i] << " "; }
-    cout << endl;
+    if (p1 > p2) {
+      p1 -= p2;
+      p2 = 0;
+      while (p1--) {
+        x1 *= 10;
+      }
+      if (x1 < x2) {
+        cout << "<" << endl;
+      } else if (x1 > x2) {
+        cout << ">" << endl;
+      } else {
+        cout << "=" << endl;
+      }
+    } else {
+      p2 -= p1;
+      p1 = 0;
+      while (p2--) {
+        x2 *= 10;
+      }
+      if (x1 < x2) {
+        cout << "<" << endl;
+      } else if (x1 > x2) {
+        cout << ">" << endl;
+      } else {
+        cout << "=" << endl;
+      }
+    }
   }
 }
 
@@ -128,12 +127,11 @@ int main() {
   cin.tie(nullptr);
   cout.tie(0);
 
-  // ll t;
-  // cin >> t;
-  // while (t--) {
-  //   solve();
-  // }
-  solve();
+  ll t;
+  cin >> t;
+  while (t--) {
+    solve();
+  }
 
   return 0;
 }

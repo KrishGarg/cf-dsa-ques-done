@@ -57,70 +57,50 @@ ll modpow(ll a, ll b, ll m) {
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
 void solve() {
-  ll n, m, s;
-  cin >> n >> m >> s;
+  ll n, m;
+  cin >> n >> m;
 
-  vll a(m), b(n), c(n);
-  tin0(a, m);
-  tin0(b, n);
-  tin0(c, n);
+  vvll adj(n + 1);
+  fu(i, 1, m) {
+    ll u, v;
+    cin >> u >> v;
+    adj[u].eb(v);
+    adj[v].eb(u);
+  }
 
-  vector<pair<ll, pll>> skillPass(n);
-  fu(i, 0, n - 1) { skillPass[i] = {b[i], {c[i], i + 1}}; }
-  sort(all(skillPass), greater<>());
+  vll teams(n + 1, 0);
+  fu(i, 1, n) {
+    if (teams[i] != 0) continue;  // some team alloted alr
 
-  vpll aIdx(m);
-  fu(i, 0, m - 1) { aIdx[i] = {a[i], i}; }
-  sort(all(aIdx), greater<>());
+    teams[i] = 1;  // start any con comp with any team, flexible team size
+    queue<ll> q;
+    q.push(i);
 
-  ll ans = -1;
-  ll l = 1, r = m;
-  vll best_ans(m);
+    while (!q.empty()) {
+      ll x = q.front();
+      q.pop();
 
-  while (l <= r) {
-    ll t = l + (r - l) / 2;
-    priority_queue<pll, vpll, greater<>> pq;
-    ll cost = 0;
-    bool canDo = true;
-    vll current_ans(m);
+      for (ll nei : adj[x]) {
+        if (teams[nei]) {
+          if (teams[nei] == teams[x]) {
+            cout << "IMPOSSIBLE" << endl;
+            return;
+          }
+          continue;
+        }
 
-    for (ll i = 0, j = 0; i < m; i += t) {
-      while (j < n && skillPass[j].f >= aIdx[i].f) {
-        pq.push({skillPass[j].s.f, skillPass[j].s.s});
-        j++;
+        if (teams[x] == 1)
+          teams[nei] = 2;
+        else
+          teams[nei] = 1;
+
+        q.push(nei);
       }
-
-      if (pq.empty()) {
-        canDo = false;
-        break;
-      }
-      pll cheapest = pq.top();
-      pq.pop();
-      cost += cheapest.f;
-
-      if (cost > s) {
-        canDo = false;
-        break;
-      }
-
-      fu(k, i, min(m, i + t) - 1) { current_ans[aIdx[k].s] = cheapest.s; }
-    }
-
-    if (canDo) {
-      ans = t;
-      best_ans = current_ans;
-      r = t - 1;
-    } else {
-      l = t + 1;
     }
   }
-  if (ans == -1) {
-    no;
-  } else {
-    yes;
-    fu(i, 0, m - 1) { cout << best_ans[i] << " "; }
-    cout << endl;
-  }
+
+  fu(i, 1, n) { cout << teams[i] << " "; }
+  cout << endl;
 }
 
 int main() {
@@ -133,6 +113,7 @@ int main() {
   // while (t--) {
   //   solve();
   // }
+
   solve();
 
   return 0;

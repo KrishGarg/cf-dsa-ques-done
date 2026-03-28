@@ -57,70 +57,42 @@ ll modpow(ll a, ll b, ll m) {
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
 void solve() {
-  ll n, m, s;
-  cin >> n >> m >> s;
+  ll n;
+  cin >> n;
 
-  vll a(m), b(n), c(n);
-  tin0(a, m);
-  tin0(b, n);
-  tin0(c, n);
+  vvll adj(n + 1);
+  fu(i, 1, n - 1) {
+    ll u, v;
+    cin >> u >> v;
+    adj[u].eb(v);
+    adj[v].eb(u);
+  }
 
-  vector<pair<ll, pll>> skillPass(n);
-  fu(i, 0, n - 1) { skillPass[i] = {b[i], {c[i], i + 1}}; }
-  sort(all(skillPass), greater<>());
+  vll color(n + 1, 0);
+  color[1] = 1;
+  queue<ll> q;
+  q.push(1);
 
-  vpll aIdx(m);
-  fu(i, 0, m - 1) { aIdx[i] = {a[i], i}; }
-  sort(all(aIdx), greater<>());
+  while (!q.empty()) {
+    ll x = q.front();
+    q.pop();
 
-  ll ans = -1;
-  ll l = 1, r = m;
-  vll best_ans(m);
-
-  while (l <= r) {
-    ll t = l + (r - l) / 2;
-    priority_queue<pll, vpll, greater<>> pq;
-    ll cost = 0;
-    bool canDo = true;
-    vll current_ans(m);
-
-    for (ll i = 0, j = 0; i < m; i += t) {
-      while (j < n && skillPass[j].f >= aIdx[i].f) {
-        pq.push({skillPass[j].s.f, skillPass[j].s.s});
-        j++;
+    for (ll nei : adj[x]) {
+      if (color[nei]) {
+        continue;
       }
 
-      if (pq.empty()) {
-        canDo = false;
-        break;
-      }
-      pll cheapest = pq.top();
-      pq.pop();
-      cost += cheapest.f;
+      if (color[x] == 1)
+        color[nei] = 2;
+      else
+        color[nei] = 1;
 
-      if (cost > s) {
-        canDo = false;
-        break;
-      }
-
-      fu(k, i, min(m, i + t) - 1) { current_ans[aIdx[k].s] = cheapest.s; }
-    }
-
-    if (canDo) {
-      ans = t;
-      best_ans = current_ans;
-      r = t - 1;
-    } else {
-      l = t + 1;
+      q.push(nei);
     }
   }
-  if (ans == -1) {
-    no;
-  } else {
-    yes;
-    fu(i, 0, m - 1) { cout << best_ans[i] << " "; }
-    cout << endl;
-  }
+  vll cnt = {0, 0};
+  fu(i, 1, n) { cnt[color[i] - 1]++; }
+  cout << (cnt[0] * cnt[1]) - (n - 1) << endl;
 }
 
 int main() {
@@ -133,6 +105,7 @@ int main() {
   // while (t--) {
   //   solve();
   // }
+
   solve();
 
   return 0;

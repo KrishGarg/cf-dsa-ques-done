@@ -57,70 +57,25 @@ ll modpow(ll a, ll b, ll m) {
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
 void solve() {
-  ll n, m, s;
-  cin >> n >> m >> s;
+  ll n, l, r;
+  str s;
+  cin >> n >> l >> r >> s;
 
-  vll a(m), b(n), c(n);
-  tin0(a, m);
-  tin0(b, n);
-  tin0(c, n);
+  map<ch, ll> winFreq;
+  fu(i, l, r) { winFreq[s[i]]++; }
 
-  vector<pair<ll, pll>> skillPass(n);
-  fu(i, 0, n - 1) { skillPass[i] = {b[i], {c[i], i + 1}}; }
-  sort(all(skillPass), greater<>());
+  ll ans = 0;
+  fu(i, 0, n - 1) {
+    ans += winFreq[s[i]];
 
-  vpll aIdx(m);
-  fu(i, 0, m - 1) { aIdx[i] = {a[i], i}; }
-  sort(all(aIdx), greater<>());
-
-  ll ans = -1;
-  ll l = 1, r = m;
-  vll best_ans(m);
-
-  while (l <= r) {
-    ll t = l + (r - l) / 2;
-    priority_queue<pll, vpll, greater<>> pq;
-    ll cost = 0;
-    bool canDo = true;
-    vll current_ans(m);
-
-    for (ll i = 0, j = 0; i < m; i += t) {
-      while (j < n && skillPass[j].f >= aIdx[i].f) {
-        pq.push({skillPass[j].s.f, skillPass[j].s.s});
-        j++;
-      }
-
-      if (pq.empty()) {
-        canDo = false;
-        break;
-      }
-      pll cheapest = pq.top();
-      pq.pop();
-      cost += cheapest.f;
-
-      if (cost > s) {
-        canDo = false;
-        break;
-      }
-
-      fu(k, i, min(m, i + t) - 1) { current_ans[aIdx[k].s] = cheapest.s; }
+    if (i + l < n) {
+      winFreq[s[i + l]]--;
     }
-
-    if (canDo) {
-      ans = t;
-      best_ans = current_ans;
-      r = t - 1;
-    } else {
-      l = t + 1;
+    if (i + r + 1 < n) {
+      winFreq[s[i + r + 1]]++;
     }
   }
-  if (ans == -1) {
-    no;
-  } else {
-    yes;
-    fu(i, 0, m - 1) { cout << best_ans[i] << " "; }
-    cout << endl;
-  }
+  cout << ans << endl;
 }
 
 int main() {
@@ -131,9 +86,8 @@ int main() {
   // ll t;
   // cin >> t;
   // while (t--) {
-  //   solve();
-  // }
   solve();
+  // }
 
   return 0;
 }
