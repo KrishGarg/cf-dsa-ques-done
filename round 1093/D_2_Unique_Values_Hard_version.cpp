@@ -84,7 +84,69 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+ll query(ll k, ll m, ll n) {
+  // from k to k + m
+  ll end = 2 * n + 1;
+  cout << "? " << m + 1 << " ";
+  fu(i, k, k + m) {
+    ll cur = i;
+    if (i > end) cur -= end;
+    cout << cur << " ";
+  }
+  cout << endl;
+  ll x;
+  cin >> x;
+  return x;
+}
+
+void solve() {
+  ll n;
+  cin >> n;
+
+  ll third = -1, second = -1, first = -1;
+  ll l = 1, r = 2 * n + 1;
+  while (l <= r) {
+    ll mid = l + (r - l) / 2;
+    ll x = query(1, mid - 1, n);
+
+    if ((x % 2) == (mid % 2)) {
+      l = mid + 1;
+    } else {
+      third = mid;
+      r = mid - 1;
+    }
+  }
+
+  l = 1, r = 2 * n + 1;
+  while (l <= r) {
+    ll mid = l + (r - l) / 2;
+    ll x = query(third, mid - 1, n);
+
+    if ((x % 2) == (mid % 2)) {
+      l = mid + 1;
+    } else {
+      second = third + mid - 1;
+      if (second > 2 * n + 1) second -= 2 * n + 1;
+      r = mid - 1;
+    }
+  }
+
+  l = 1, r = 2 * n + 1;
+  while (l <= r) {
+    ll mid = l + (r - l) / 2;
+    ll x = query(second, mid - 1, n);
+
+    if ((x % 2) == (mid % 2)) {
+      l = mid + 1;
+    } else {
+      first = second + mid - 1;
+      if (first > 2 * n + 1) first -= 2 * n + 1;
+      r = mid - 1;
+    }
+  }
+
+  cout << "! " << first << " " << second << " " << third << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);

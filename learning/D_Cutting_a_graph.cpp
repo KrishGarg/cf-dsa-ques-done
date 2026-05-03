@@ -34,34 +34,6 @@ typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
                          __gnu_pbds::tree_order_statistics_node_update>
     ordered_set;
 
-struct DSU {
-  // DSU dsu(n);
-  vll p;
-  vll sz;
-
-  DSU(ll n) {
-    p = vll(n + 1);
-    sz = vll(n + 1, 1);
-    fu(i, 1, n) { p[i] = i; }
-  }
-
-  ll get(ll x) {
-    if (p[x] == x) return x;
-    return p[x] = get(p[x]);
-  }
-
-  void uni(ll x, ll y) {
-    x = get(x);
-    y = get(y);
-    if (x == y) return;
-    if (sz[x] < sz[y]) swap(x, y);
-    sz[x] += sz[y];
-    p[y] = x;
-  }
-
-  bool same(ll u, ll v) { return get(u) == get(v); }
-};
-
 ll pow(ll a, ll b) {
   ll res = 1;
   while (b > 0) {
@@ -84,18 +56,71 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+struct DSU {
+  vll p;
+
+  DSU(ll n) { p = vll(n + 1, -1); }
+
+  ll get(ll x) {
+    if (p[x] < 0) return x;
+    return p[x] = get(p[x]);
+  }
+
+  void uni(ll x, ll y) {
+    x = get(x);
+    y = get(y);
+    if (x == y) return;
+    if (p[x] > p[y]) swap(x, y);
+    p[x] += p[y];
+    p[y] = x;
+  }
+
+  bool same(ll u, ll v) { return get(u) == get(v); }
+};
+
+void solve() {
+  ll n, m, k;
+  cin >> n >> m >> k;
+
+  fu(i, 1, m) {
+    ll u, v;
+    cin >> u >> v;
+  }
+
+  vector<tuple<str, ll, ll>> queries(k);
+  fu(i, 0, k - 1) {
+    str q;
+    ll u, v;
+    cin >> q >> u >> v;
+    queries[i] = {q, u, v};
+  }
+
+  DSU dsu(n);
+  vector<str> ans;
+
+  fd(i, k - 1, 0) {
+    auto [q, u, v] = queries[i];
+    if (q == "ask") {
+      ans.pb(dsu.same(u, v) ? "YES" : "NO");
+    } else {
+      dsu.uni(u, v);
+    }
+  }
+
+  reverse(all(ans));
+  for (str& x : ans) cout << x << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  solve();
+  // }
 
   return 0;
 }

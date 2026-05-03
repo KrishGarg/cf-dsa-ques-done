@@ -38,11 +38,13 @@ struct DSU {
   // DSU dsu(n);
   vll p;
   vll sz;
+  vll end;
 
   DSU(ll n) {
     p = vll(n + 1);
     sz = vll(n + 1, 1);
     fu(i, 1, n) { p[i] = i; }
+    end = p;
   }
 
   ll get(ll x) {
@@ -54,6 +56,7 @@ struct DSU {
     x = get(x);
     y = get(y);
     if (x == y) return;
+    end[x] = end[y];
     if (sz[x] < sz[y]) swap(x, y);
     sz[x] += sz[y];
     p[y] = x;
@@ -84,18 +87,42 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  DSU dsu(n);
+  while (m--) {
+    ch q;
+    ll x;
+
+    cin >> q >> x;
+    if (q == '-') {
+      // assume x = 0 is no one to the right
+      dsu.uni(x, (x + 1) % (n + 1));
+    }
+    if (q == '?') {
+      if (dsu.end[dsu.get(x)] == dsu.end[dsu.get(0)]) {
+        cout << -1 << endl;
+      } else {
+        cout << dsu.end[dsu.get(x)] << endl;
+      }
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  //   solve();
+  // }
+
+  solve();
 
   return 0;
 }

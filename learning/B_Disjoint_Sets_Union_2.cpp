@@ -34,34 +34,6 @@ typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
                          __gnu_pbds::tree_order_statistics_node_update>
     ordered_set;
 
-struct DSU {
-  // DSU dsu(n);
-  vll p;
-  vll sz;
-
-  DSU(ll n) {
-    p = vll(n + 1);
-    sz = vll(n + 1, 1);
-    fu(i, 1, n) { p[i] = i; }
-  }
-
-  ll get(ll x) {
-    if (p[x] == x) return x;
-    return p[x] = get(p[x]);
-  }
-
-  void uni(ll x, ll y) {
-    x = get(x);
-    y = get(y);
-    if (x == y) return;
-    if (sz[x] < sz[y]) swap(x, y);
-    sz[x] += sz[y];
-    p[y] = x;
-  }
-
-  bool same(ll u, ll v) { return get(u) == get(v); }
-};
-
 ll pow(ll a, ll b) {
   ll res = 1;
   while (b > 0) {
@@ -84,18 +56,63 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  vll p(n + 1);
+  vll minn(n + 1);
+  vll maxx(n + 1);
+  vll sz(n + 1, 1);
+
+  fu(i, 1, n) {
+    p[i] = i;
+    minn[i] = i;
+    maxx[i] = i;
+  }
+
+  auto get = [&](ll x, auto&& f) -> ll {
+    if (p[x] != x) p[x] = f(p[x], f);
+    return p[x];
+  };
+
+  auto uni = [&](ll x, ll y) {
+    x = get(x, get);
+    y = get(y, get);
+
+    if (x == y) return;
+    if (sz[x] < sz[y]) swap(x, y);
+    sz[x] += sz[y];
+    p[y] = x;
+    minn[x] = min(minn[x], minn[y]);
+    maxx[x] = max(maxx[x], maxx[y]);
+  };
+
+  fu(i, 0, m - 1) {
+    str q;
+    ll u, v;
+    cin >> q;
+    if (q == "get") {
+      cin >> u;
+      u = get(u, get);
+      cout << minn[u] << " " << maxx[u] << " " << sz[u] << endl;
+    } else {
+      cin >> u >> v;
+      uni(u, v);
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  solve();
+  // }
 
   return 0;
 }

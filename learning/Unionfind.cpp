@@ -35,18 +35,12 @@ typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
     ordered_set;
 
 struct DSU {
-  // DSU dsu(n);
   vll p;
-  vll sz;
 
-  DSU(ll n) {
-    p = vll(n + 1);
-    sz = vll(n + 1, 1);
-    fu(i, 1, n) { p[i] = i; }
-  }
+  DSU(ll n) { p = vll(n + 1, -1); }
 
   ll get(ll x) {
-    if (p[x] == x) return x;
+    if (p[x] < 0) return x;
     return p[x] = get(p[x]);
   }
 
@@ -54,8 +48,8 @@ struct DSU {
     x = get(x);
     y = get(y);
     if (x == y) return;
-    if (sz[x] < sz[y]) swap(x, y);
-    sz[x] += sz[y];
+    if (p[x] > p[y]) swap(x, y);
+    p[x] += p[y];
     p[y] = x;
   }
 
@@ -84,18 +78,32 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n, q;
+  cin >> n >> q;
+
+  DSU dsu(n);
+  fu(i, 1, q) {
+    ll t, u, v;
+    cin >> t >> u >> v;
+
+    if (t)
+      cout << dsu.same(u, v) << endl;
+    else
+      dsu.uni(u, v);
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  solve();
+  // }
 
   return 0;
 }

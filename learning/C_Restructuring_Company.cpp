@@ -84,18 +84,52 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n, q;
+  cin >> n >> q;
+
+  DSU dsu(n);
+  vector<ll> nxt(n + 1);
+  iota(all(nxt), 0);
+
+  auto find_nxt = [&](auto& f, ll i) -> ll {
+    if (nxt[i] == i) return i;
+    return (nxt[i] = f(f, nxt[i]));
+  };
+
+  while (q--) {
+    ll type, x, y;
+    cin >> type >> x >> y;
+
+    if (type == 1) {
+      dsu.uni(x, y);
+    } else if (type == 2) {
+      ll curr = x;
+      while (curr < y) {
+        dsu.uni(curr, curr + 1);
+        nxt[curr] = curr + 1;
+        curr = find_nxt(find_nxt, curr + 1);
+      }
+    } else {
+      if (dsu.get(x) == dsu.get(y)) {
+        yes;
+      } else {
+        no;
+      }
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  solve();
+  // }
 
   return 0;
 }

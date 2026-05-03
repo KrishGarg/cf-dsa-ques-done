@@ -84,7 +84,12 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  str s;
+  cin >> s;
+
+  
+}
 
 int main() {
   ios::sync_with_stdio(false);

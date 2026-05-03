@@ -34,34 +34,6 @@ typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
                          __gnu_pbds::tree_order_statistics_node_update>
     ordered_set;
 
-struct DSU {
-  // DSU dsu(n);
-  vll p;
-  vll sz;
-
-  DSU(ll n) {
-    p = vll(n + 1);
-    sz = vll(n + 1, 1);
-    fu(i, 1, n) { p[i] = i; }
-  }
-
-  ll get(ll x) {
-    if (p[x] == x) return x;
-    return p[x] = get(p[x]);
-  }
-
-  void uni(ll x, ll y) {
-    x = get(x);
-    y = get(y);
-    if (x == y) return;
-    if (sz[x] < sz[y]) swap(x, y);
-    sz[x] += sz[y];
-    p[y] = x;
-  }
-
-  bool same(ll u, ll v) { return get(u) == get(v); }
-};
-
 ll pow(ll a, ll b) {
   ll res = 1;
   while (b > 0) {
@@ -84,18 +56,85 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+struct DSU {
+  vll p;
+  vll sz;
+  vll add_to_root;
+  vll delta;
+
+  DSU(ll n) {
+    p = vll(n + 1);
+    sz = vll(n + 1, 1);
+    add_to_root = vll(n + 1, 0);
+    delta = vll(n + 1, 0);
+
+    fu(i, 1, n) { p[i] = i; }
+  }
+
+  ll get(ll x) {
+    if (p[x] == x) return x;
+    ll par = p[x];
+    p[x] = get(p[x]);
+    delta[x] += delta[par];
+    return p[x];
+  }
+
+  void join(ll x, ll y) {
+    x = get(x);
+    y = get(y);
+
+    if (x == y) return;
+    if (sz[x] < sz[y]) swap(x, y);
+
+    sz[x] += sz[y];
+    p[y] = x;
+    delta[y] = add_to_root[y] - add_to_root[x];
+  }
+
+  void add(ll x, ll v) { add_to_root[get(x)] += v; }
+
+  ll experience(ll x) {
+    ll root = get(x);
+    return add_to_root[root] + delta[x];
+  }
+};
+
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  DSU dsu(n);
+
+  fu(i, 0, m - 1) {
+    str q;
+    cin >> q;
+
+    ll x, y;
+
+    if (q == "join") {
+      cin >> x >> y;
+      dsu.join(x, y);
+    } else if (q == "add") {
+      ll v;
+      cin >> x >> v;
+      dsu.add(x, v);
+    } else {
+      cin >> x;
+      cout << dsu.experience(x) << '\n';
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  solve();
+  // }
 
   return 0;
 }

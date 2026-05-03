@@ -84,7 +84,49 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n, m, k;
+  cin >> n >> m >> k;
+
+  vll a(n), b(m);
+  tin0(a, n);
+  tin0(b, m);
+
+  if (k % 2 == 0)
+    k = 2;
+  else
+    k = 1;
+
+  for (ll i = 1; i <= k; i++) {
+    if (i % 2 == 0) {
+      auto bMinP = min_element(all(b));
+      auto aMaxP = max_element(all(a));
+
+      ll bMin = *bMinP;
+      ll aMax = *aMaxP;
+
+      if (aMax < bMin) continue;
+
+      a[aMaxP - a.begin()] = bMin;
+      b[bMinP - b.begin()] = aMax;
+    } else {
+      auto bMaxP = max_element(all(b));
+      auto aMinP = min_element(all(a));
+
+      ll bMax = *bMaxP;
+      ll aMin = *aMinP;
+
+      if (bMax < aMin) continue;
+
+      a[aMinP - a.begin()] = bMax;
+      b[bMaxP - b.begin()] = aMin;
+    }
+  }
+
+  ll ans = accumulate(all(a), 0LL);
+
+  cout << ans << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);

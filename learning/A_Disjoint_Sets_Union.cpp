@@ -34,34 +34,6 @@ typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
                          __gnu_pbds::tree_order_statistics_node_update>
     ordered_set;
 
-struct DSU {
-  // DSU dsu(n);
-  vll p;
-  vll sz;
-
-  DSU(ll n) {
-    p = vll(n + 1);
-    sz = vll(n + 1, 1);
-    fu(i, 1, n) { p[i] = i; }
-  }
-
-  ll get(ll x) {
-    if (p[x] == x) return x;
-    return p[x] = get(p[x]);
-  }
-
-  void uni(ll x, ll y) {
-    x = get(x);
-    y = get(y);
-    if (x == y) return;
-    if (sz[x] < sz[y]) swap(x, y);
-    sz[x] += sz[y];
-    p[y] = x;
-  }
-
-  bool same(ll u, ll v) { return get(u) == get(v); }
-};
-
 ll pow(ll a, ll b) {
   ll res = 1;
   while (b > 0) {
@@ -84,18 +56,47 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  vll p(n + 1, -1);
+  auto get = [&](ll x, auto&& f) -> ll {
+    return (p[x] < 0 ? x : p[x] = f(p[x], f));
+  };
+
+  auto uni = [&](ll x, ll y) {
+    x = get(x, get);
+    y = get(y, get);
+
+    if (x == y) return;
+    if (p[x] > p[y]) swap(x, y);
+    p[x] += p[y];
+    p[y] = x;
+  };
+
+  fu(i, 0, m - 1) {
+    str q;
+    ll u, v;
+    cin >> q >> u >> v;
+    if (q == "get") {
+      cout << (get(u, get) == get(v, get) ? "YES" : "NO") << endl;
+    } else {
+      uni(u, v);
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  solve();
+  // }
 
   return 0;
 }

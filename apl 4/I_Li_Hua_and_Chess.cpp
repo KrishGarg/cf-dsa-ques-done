@@ -84,7 +84,36 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+ll query(ll a, ll b) {
+  cout << "? " << a << " " << b;
+  cout << endl;
+
+  ll x;
+  cin >> x;
+  return x;
+}
+
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  ll b = query(1, 1);
+
+  ll potX = b+1;
+  ll a = query(potX, 1);
+  ll potY = a + 1;
+
+  ll check = query(n, m);
+
+  if (check == max(n-potX, m-potY)) {
+    cout << "! " << potX << " " << potY << endl;
+    return;
+  }
+
+  ll y = b+1;
+  
+
+}
 
 int main() {
   ios::sync_with_stdio(false);

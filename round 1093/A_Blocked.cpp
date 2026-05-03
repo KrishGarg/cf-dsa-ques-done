@@ -84,7 +84,22 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n;
+  cin >> n;
+
+  vll a(n);
+  tin0(a, n);
+  sort(all(a), greater<>());
+  fu(i, 0, n - 2) {
+    if (a[i] == a[i + 1]) {
+      cout << -1 << endl;
+      return;
+    }
+  }
+  fu(i, 0, n - 1) { cout << a[i] << " "; }
+  cout << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);

@@ -84,7 +84,28 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+  vll a(n);
+  tin0(a, n);
+
+  ll cnt = 1, mx = 1;
+  fu(i, 1, n - 1) {
+    if (a[i] == a[i - 1]) {
+      cnt++;
+      mx = max(mx, cnt);
+    } else {
+      mx = max(mx, cnt);
+      cnt = 1;
+    }
+  }
+
+  if (mx >= m)
+    no;
+  else
+    yes;
+}
 
 int main() {
   ios::sync_with_stdio(false);
