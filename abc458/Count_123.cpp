@@ -29,7 +29,7 @@ using vpll = vector<pll>;
 #define f first
 #define s second
 
-typedef __gnu_pbds::tree<ll, __gnu_pbds::null_type, less<ll>,
+typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
                          __gnu_pbds::rb_tree_tag,
                          __gnu_pbds::tree_order_statistics_node_update>
     ordered_set;
@@ -84,15 +84,64 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+const ll MOD = 998244353;
+const ll MAXN = 3e6 + 1;
+
+ll fact[MAXN];
+ll invFact[MAXN];
+
+void precomp() {
+  fact[0] = 1;
+  invFact[0] = 1;
+
+  fu(i, 1, MAXN - 1) { fact[i] = (i * fact[i - 1]) % MOD; }
+  invFact[MAXN - 1] = inv(fact[MAXN - 1], MOD);
+  fd(i, MAXN - 2, 1) { invFact[i] = (invFact[i + 1] * (i + 1)) % MOD; }
+}
+
+ll ncr(ll n, ll r) {
+  if (r < 0 || r > n || n < 0) return 0;
+  return fact[n] * invFact[r] % MOD * invFact[n - r] % MOD;
+}
+
+void solve() {
+  ll x1, x2, x3;
+  cin >> x1 >> x2 >> x3;
+
+  if (x1 == 0) {
+    cout << ncr(x2 + x3, x2) << endl;
+    return;
+  }
+
+  if (x3 == 0) {
+    cout << ncr(x1 + x2, x2) << endl;
+  }
+
+  if (x2 == 0) {
+    cout << 0 << endl;
+    return;
+  }
+
+  ll ans = 0;
+  ll lt = min(x1, x2 + 1);
+
+  fu(k, 1, lt) {
+    ll tt =
+        ncr(x2 + 1, k) * ncr(x1 - 1, k - 1) % MOD * ncr(x2 + x3 - k, x3) % MOD;
+    ans = (ans + tt) % MOD;
+  }
+
+  cout << ans << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
+  precomp();
   ll t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) {
     solve();
   }

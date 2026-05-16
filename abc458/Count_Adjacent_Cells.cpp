@@ -29,7 +29,7 @@ using vpll = vector<pll>;
 #define f first
 #define s second
 
-typedef __gnu_pbds::tree<ll, __gnu_pbds::null_type, less<ll>,
+typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>,
                          __gnu_pbds::rb_tree_tag,
                          __gnu_pbds::tree_order_statistics_node_update>
     ordered_set;
@@ -84,18 +84,33 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
-void solve() {}
+void solve() {
+  ll h, w;
+  cin >> h >> w;
+
+  fu(i, 1, h) {
+    fu(j, 1, w) {
+      ll k = 0;
+      if (i + 1 <= h) k++;
+      if (j + 1 <= w) k++;
+      if (i - 1 >= 1) k++;
+      if (j - 1 >= 1) k++;
+      cout << k << " ";
+    }
+    cout << endl;
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
 
-  ll t = 1;
-  cin >> t;
-  while (t--) {
-    solve();
-  }
+  // ll t;
+  // cin >> t;
+  // while (t--) {
+  solve();
+  // }
 
   return 0;
 }
