@@ -84,6 +84,28 @@ ll modpow(ll a, ll b, ll m) {
 
 ll inv(ll a, ll m) { return modpow(a, m - 2, m); }
 
+const ll MAXN = 10000005;
+ll spf[MAXN];
+void computeSPF() {
+  for (ll i = 1; i < MAXN; i++) spf[i] = i;
+  for (ll i = 2; i * i < MAXN; i++) {
+    if (spf[i] == i) {
+      for (ll j = i * i; j < MAXN; j += i) {
+        if (spf[j] == j) spf[j] = i;
+      }
+    }
+  }
+}
+
+vector<ll> factorize(ll x) {
+  vector<ll> ret;
+  while (x != 1) {
+    ret.push_back(spf[x]);
+    x = x / spf[x];
+  }
+  return ret;
+}
+
 void solve() {}
 
 int main() {
