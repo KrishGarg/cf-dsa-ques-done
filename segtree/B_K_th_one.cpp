@@ -161,6 +161,14 @@ struct SegTree {  // sumTree
 
   void set(ll i, ll v) { set(i, v, 0, 0, sz); }
 
+  void flip(ll i) {
+    ll cur = query(i, i + 1);
+    if (cur)
+      set(i, 0);
+    else
+      set(i, 1);
+  }
+
   ll query(ll l, ll r, ll x, ll lx, ll rx) {
     if (l >= rx || r <= lx) return 0;
     if (lx >= l && rx <= r) return sums[x];
@@ -174,7 +182,47 @@ struct SegTree {  // sumTree
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
 };
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  vll a(n);
+  tin0(a, n);
+
+  SegTree seg(a);
+
+  fu(i, 1, m) {
+    ll op;
+    cin >> op;
+    if (op == 1) {
+      ll j;
+      cin >> j;
+      seg.flip(j);
+    } else {
+      ll k;
+      cin >> k;
+      k++;
+
+      ll l = 0, r = n - 1;
+      ll ans = -1;
+      while (l <= r) {
+        ll m = l + (r - l) / 2;
+        ll th = seg.query(0, m + 1);
+
+        // cout << "ones till " << m << " are " << th << endl;
+
+        if (th >= k) {
+          ans = m;
+          r = m - 1;
+        } else {
+          l = m + 1;
+        }
+      }
+
+      cout << ans << endl;
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
@@ -182,7 +230,7 @@ int main() {
   cout.tie(0);
 
   ll t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) {
     solve();
   }

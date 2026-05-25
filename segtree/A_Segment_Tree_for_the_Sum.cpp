@@ -174,7 +174,29 @@ struct SegTree {  // sumTree
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
 };
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  vll a(n);
+  tin0(a, n);
+
+  SegTree seg(a);
+  fu(i, 0, m - 1) {
+    ll op;
+    cin >> op;
+    if (op == 1) {
+      ll i, v;
+      cin >> i >> v;
+
+      seg.set(i, v);
+    } else {
+      ll l, r;
+      cin >> l >> r;
+      cout << seg.query(l, r) << endl;
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
@@ -182,7 +204,7 @@ int main() {
   cout.tie(0);
 
   ll t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) {
     solve();
   }

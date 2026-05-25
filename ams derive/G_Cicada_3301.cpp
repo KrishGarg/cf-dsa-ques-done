@@ -174,12 +174,32 @@ struct SegTree {  // sumTree
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
 };
 
-void solve() {}
+ll ans[100001] = {0};
+void preComp(){fu(i, 2, 100000){ll cur = i;
+ll cnt = 0;
+while (cur >= i) {
+  if (cur % 2)
+    cur = 3 * cur + 1;
+  else
+    cur = cur / 2;
+  cnt++;
+}
+ans[i] = cnt + ans[cur];
+}
+}
+;
+
+void solve() {
+  ll n;
+  cin >> n;
+  cout << ans[n] << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(0);
+  preComp();
 
   ll t = 1;
   cin >> t;

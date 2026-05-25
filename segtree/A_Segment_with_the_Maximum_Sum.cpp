@@ -108,13 +108,16 @@ vector<ll> factorize(ll x) {
 
 struct SegTree {  // sumTree
   ll sz;
-  vll sums;
+  vll sums, pref, suf, ans;
 
   SegTree(ll n) {
     sz = 1;
     while (sz < n) sz *= 2;
 
     sums = vll(2 * sz, 0LL);
+    pref = vll(2 * sz, 0LL);
+    suf = vll(2 * sz, 0LL);
+    ans = vll(2 * sz, 0LL);
   }
 
   SegTree(vll& a) : SegTree(a.size()) { build(a); }
@@ -128,9 +131,21 @@ struct SegTree {  // sumTree
     return (x - 1) / 2;
   }
 
+  void merge(ll x) {
+    sums[x] = sums[left(x)] + sums[right(x)];
+    pref[x] = max(pref[left(x)], sums[left(x)] + pref[right(x)]);
+    suf[x] = max(suf[right(x)], sums[right(x)] + suf[left(x)]);
+    ans[x] = max({ans[left(x)], ans[right(x)], suf[left(x)] + pref[right(x)]});
+  }
+
   void build(vll& a, ll x, ll lx, ll rx) {
     if (rx - lx == 1) {
-      if (lx < (ll)a.size()) sums[x] = a[lx];
+      if (lx < (ll)a.size()) {
+        sums[x] = a[lx];
+        pref[x] = max(0LL, a[lx]);
+        suf[x] = max(0LL, a[lx]);
+        ans[x] = max(0LL, a[lx]);
+      }
       return;
     }
 
@@ -138,7 +153,7 @@ struct SegTree {  // sumTree
     build(a, left(x), lx, m);
     build(a, right(x), m, rx);
 
-    sums[x] = sums[left(x)] + sums[right(x)];
+    merge(x);
   }
 
   void build(vll& a) { build(a, 0, 0, sz); }
@@ -146,6 +161,9 @@ struct SegTree {  // sumTree
   void set(ll i, ll v, ll x, ll lx, ll rx) {
     if (rx - lx == 1) {
       sums[x] = v;
+      pref[x] = max(0LL, v);
+      suf[x] = max(0LL, v);
+      ans[x] = max(0LL, v);
       return;
     }
 
@@ -156,7 +174,7 @@ struct SegTree {  // sumTree
       set(i, v, right(x), m, rx);
     }
 
-    sums[x] = sums[left(x)] + sums[right(x)];
+    merge(x);
   }
 
   void set(ll i, ll v) { set(i, v, 0, 0, sz); }
@@ -172,9 +190,27 @@ struct SegTree {  // sumTree
   }
 
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
+
+  ll maxSum() { return ans[0]; }
 };
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+
+  vll a(n);
+  tin0(a, n);
+
+  SegTree seg(a);
+
+  cout << seg.maxSum() << endl;
+  fu(i, 1, m) {
+    ll j, v;
+    cin >> j >> v;
+    seg.set(j, v);
+    cout << seg.maxSum() << endl;
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
@@ -182,7 +218,7 @@ int main() {
   cout.tie(0);
 
   ll t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) {
     solve();
   }

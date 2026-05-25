@@ -172,9 +172,46 @@ struct SegTree {  // sumTree
   }
 
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
+
+  ll findKth(ll k, ll x, ll lx, ll rx) {
+    if (rx - lx == 1) {
+      return lx;
+    }
+    ll m = lx + (rx - lx) / 2;
+    if (sums[left(x)] >= k) {
+      return findKth(k, left(x), lx, m);
+    } else {
+      return findKth(k - sums[left(x)], right(x), m, rx);
+    }
+  }
+
+  ll findKth(ll k) { return findKth(k, 0, 0, sz); }
 };
 
-void solve() {}
+void solve() {
+  ll n;
+  cin >> n;
+
+  vll a(n);
+  tin0(a, n);
+
+  vll inp(n + 1, 1);
+  inp[0] = 0;
+  SegTree seg(inp);
+
+  vll ans(n);
+  fd(i, n - 1, 0) {
+    ll tot = seg.sums[0];
+
+    ll target = tot - a[i];
+    ll val = seg.findKth(target);
+    ans[i] = val;
+    seg.set(val, 0);
+  }
+
+  fu(i, 0, n - 1) cout << ans[i] << " ";
+  cout << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);
@@ -182,7 +219,7 @@ int main() {
   cout.tie(0);
 
   ll t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) {
     solve();
   }

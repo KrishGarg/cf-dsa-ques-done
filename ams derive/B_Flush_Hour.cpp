@@ -174,7 +174,38 @@ struct SegTree {  // sumTree
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
 };
 
-void solve() {}
+void solve() {
+  ll n, k, F;
+  cin >> n >> k >> F;
+
+  using tp = tuple<ll, ll, ll>;
+  vector<tp> dt(n);
+  fu(i, 0, n - 1) {
+    ll t, d, idx;
+    idx = i + 1;
+    cin >> t >> d;
+    tp k = {d, t, idx};
+    dt[i] = k;
+  }
+
+  sort(all(dt));
+
+  ll curTime = 0, maxDelay = 0;
+
+  fu(i, 0, n - 1) {
+    auto& [d, t, idx] = dt[i];
+    curTime += t;
+
+    ll curDelay = curTime - d;
+    maxDelay = max(maxDelay, curDelay);
+
+    if ((i + 1) % k == 0 && (i + 1) < n) {
+      curTime += F;
+    }
+  }
+
+  cout << maxDelay << endl;
+}
 
 int main() {
   ios::sync_with_stdio(false);
@@ -182,7 +213,7 @@ int main() {
   cout.tie(0);
 
   ll t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) {
     solve();
   }

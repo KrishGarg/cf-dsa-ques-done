@@ -174,7 +174,20 @@ struct SegTree {  // sumTree
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
 };
 
-void solve() {}
+void solve() {
+  ll n;
+  cin >> n;
+
+  vll a(n);
+  tin0(a, n);
+
+  ll s = accumulate(all(a), 0LL);
+  if ((s - n) % 2) {
+    cout << "Alice" << endl;
+  } else {
+    cout << "Bob" << endl;
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);

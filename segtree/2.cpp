@@ -106,15 +106,15 @@ vector<ll> factorize(ll x) {
   return ret;
 }
 
-struct SegTree {  // sumTree
+struct SegTree {  // maxTree
   ll sz;
-  vll sums;
+  vll maxs;
 
   SegTree(ll n) {
     sz = 1;
     while (sz < n) sz *= 2;
 
-    sums = vll(2 * sz, 0LL);
+    maxs = vll(2 * sz, LLONG_MIN);
   }
 
   SegTree(vll& a) : SegTree(a.size()) { build(a); }
@@ -130,7 +130,7 @@ struct SegTree {  // sumTree
 
   void build(vll& a, ll x, ll lx, ll rx) {
     if (rx - lx == 1) {
-      if (lx < (ll)a.size()) sums[x] = a[lx];
+      if (lx < (ll)a.size()) maxs[x] = a[lx];
       return;
     }
 
@@ -138,14 +138,14 @@ struct SegTree {  // sumTree
     build(a, left(x), lx, m);
     build(a, right(x), m, rx);
 
-    sums[x] = sums[left(x)] + sums[right(x)];
+    maxs[x] = max(maxs[left(x)], maxs[right(x)]);
   }
 
   void build(vll& a) { build(a, 0, 0, sz); }
 
   void set(ll i, ll v, ll x, ll lx, ll rx) {
     if (rx - lx == 1) {
-      sums[x] = v;
+      maxs[x] = v;
       return;
     }
 
@@ -156,25 +156,62 @@ struct SegTree {  // sumTree
       set(i, v, right(x), m, rx);
     }
 
-    sums[x] = sums[left(x)] + sums[right(x)];
+    maxs[x] = max(maxs[left(x)], maxs[right(x)]);
   }
 
   void set(ll i, ll v) { set(i, v, 0, 0, sz); }
 
   ll query(ll l, ll r, ll x, ll lx, ll rx) {
-    if (l >= rx || r <= lx) return 0;
-    if (lx >= l && rx <= r) return sums[x];
+    if (l >= rx || r <= lx) return LLONG_MIN;
+    if (lx >= l && rx <= r) return maxs[x];
 
     ll m = lx + (rx - lx) / 2;
     ll s1 = query(l, r, left(x), lx, m);
     ll s2 = query(l, r, right(x), m, rx);
-    return s1 + s2;
+    return max(s1, s2);
   }
 
   ll query(ll l, ll r) { return query(l, r, 0, 0, sz); }
+
+  ll findFirst(ll v, ll l, ll x, ll lx, ll rx) {
+    if (rx <= l) return -1;
+    if (maxs[x] < v) return -1;
+    if (rx - lx == 1) return lx;
+
+    ll m = lx + (rx - lx) / 2;
+    ll res = findFirst(v, l, left(x), lx, m);
+    if (res == -1) {
+      res = findFirst(v, l, right(x), m, rx);
+    }
+    return res;
+  }
+
+  ll findFirst(ll v, ll l) { return findFirst(v, l, 0, 0, sz); }
 };
 
-void solve() {}
+void solve() {
+  ll n, m;
+  cin >> n >> m;
+  vll a(n);
+  tin0(a, n);
+
+  SegTree seg(a);
+  fu(i, 1, m) {
+    ll op;
+    cin >> op;
+
+    if (op == 1) {
+      ll i, v;
+      cin >> i >> v;
+      seg.set(i, v);
+    } else {
+      ll x, l;
+      cin >> x >> l;
+
+      cout << seg.findFirst(x, l) << endl;
+    }
+  }
+}
 
 int main() {
   ios::sync_with_stdio(false);
@@ -182,7 +219,7 @@ int main() {
   cout.tie(0);
 
   ll t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) {
     solve();
   }
